@@ -80,7 +80,6 @@
             templateResult: result_template,
             templateSelection: selected_template,
             ajax: ajax,
-            // width: null,
             width: '100%',
             tags: Boolean(element.attr('data-tags')),
         });
