@@ -147,6 +147,7 @@ element was cloned with data - which should be the case.
     'use strict';
     var init = function($element, options) {
         var settings = $.extend({
+	    with: null,
             ajax: {
                 data: function(params) {
                     return {
