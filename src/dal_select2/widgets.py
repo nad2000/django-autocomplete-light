@@ -26,7 +26,7 @@ from django.utils.itercompat import is_iterable
 import six
 
 
-I18N_PATH = 'vendor/select2/dist/js/i18n/'
+I18N_PATH = 'autocomplete_light/i18n/'
 
 
 def get_i18n_name(lang_code):
@@ -84,14 +84,10 @@ class Select2WidgetMixin(object):
 
         return forms.Media(
             js=(
-                'autocomplete_light/jquery.init.js',
-                'vendor/select2/dist/js/select2.full%s.js' % extra,
-            ) + i18n_file + (
-                'autocomplete_light/autocomplete.init.js',
-                'autocomplete_light/forward.js',
-                'autocomplete_light/select2.js',
-                'autocomplete_light/jquery.post-setup.js',
-            ),
+                'admin/js/vendor/select2/select2.full.js',
+                'autocomplete_light/autocomplete_light%s.js' % extra,
+                'autocomplete_light/select2%s.js' % extra,
+            ) + i18n_file,
             css={
                 'screen': (
                     'vendor/select2/dist/css/select2%s.css' % extra,
