@@ -80,7 +80,7 @@
             templateResult: result_template,
             templateSelection: selected_template,
             ajax: ajax,
-            with: null,
+            with: '100%',  // null,
             tags: Boolean(element.attr('data-tags')),
         });
 
