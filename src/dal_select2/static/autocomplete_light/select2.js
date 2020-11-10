@@ -83,9 +83,7 @@ document.addEventListener('dal-init-function', function () {
             templateResult: result_template,
             templateSelection: selected_template,
             ajax: ajax,
-            // with: '100%',  // null,
-            // tags: Boolean(element.attr('data-tags')),
-            with: null,
+            width: '100%',  // null,
             tags: Boolean($element.attr('data-tags')),
         });
 
