@@ -125,7 +125,7 @@ window.addEventListener("load", function () {
                 // these are used by django-nested-admin for nested template formsets
                 // note that the filter also ensures that 'empty' is not actually the related_name for some relation
                 // by ensuring that it is not surrounded by numbers on both sides
-                return !this.id.match(/(?<!-\d+)-empty-(?!\d+-)/);
+                return !this.id.match(/-empty-/) || this.id.match(/-\d+-empty-\d+-/);
             });
         }
 
@@ -237,7 +237,10 @@ window.addEventListener("load", function () {
                     data: function (params) {
                         return {
                             term: params.term,
-                            page: params.page
+                            page: params.page,
+                            app_label: $element.data('app-label'),
+                            model_name: $element.data('model-name'),
+                            field_name: $element.data('field-name')
                         };
                     }
                 }
