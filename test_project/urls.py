@@ -1,16 +1,18 @@
 import django
 from django.conf import settings
-from django.conf.urls import include, url
+from django.urls import include, re_path as url
 from django.contrib import admin
 
 import views
-
 
 urlpatterns = [
     url(r'^$', views.IndexView.as_view()),
 
     url(r'^admin/', admin.site.urls),
     url(r'^login/', views.LoginView.as_view()),
+
+    url(r'^dal_single/', views.BasicDALView, name='isolated_dal_single'),
+    url(r'^dal_multi/', views.BasicDALMultiView, name='isolated_dal_multi'),
 
     url(r'^secure_data/', include('secure_data.urls')),
     url(r'^linked_data/', include('linked_data.urls')),
@@ -30,6 +32,7 @@ urlpatterns = [
     url(r'^select2_outside_admin/', include('select2_outside_admin.urls')),
     url(r'^select2_taggit/', include('select2_taggit.urls')),
     url(r'^nested_admin/', include('nested_admin.urls')),
+    url(r'^select2_djhacker_formfield/', include('select2_djhacker_formfield.urls')),
 ]
 
 if django.VERSION < (2, 0, 0):

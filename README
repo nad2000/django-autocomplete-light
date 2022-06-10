@@ -25,26 +25,19 @@ Features
   use cases too,
 - A documented automatically tested example for each use case in test_project.
 
-Upgrading
----------
+Roadmap
+-------
 
-See `CHANGELOG <https://github.com/yourlabs/django-autocomplete-light/blob/master/CHANGELOG>`_..
-
-For v2 users and experts, a `blog post was published with plenty of details
-<http://blog.yourlabs.org/post/140477620808/django-autocomplete-light-v3-whats-going-on>`_.
+- DAL < 4 supports Python 2 and 3 and Django 1.8 to 3.x
+- DAL 4 supports Django 3.x and 4.x and Python 3
+- DAL >= 3.9 offers a modern alternative to select2
 
 Resources
 ---------
 
-- `**Live demo** graciously hosted
-  <https://dal--jpic.repl.co/>`_ by `Repl.it
-  <https://repl.it>`_
 - `**Documentation** graciously hosted
   <http://django-autocomplete-light.rtfd.org>`_ by `RTFD
   <http://rtfd.org>`_
-- `Video demo graciously hosted
-  <http://youtu.be/fJIHiqWKUXI>`_ by `Youtube
-  <http://youtube.com>`_,
 - `Mailing list graciously hosted
   <http://groups.google.com/group/yourlabs>`_ by `Google
   <http://groups.google.com>`_
@@ -55,8 +48,3 @@ Resources
 - `Package graciously hosted
   <http://pypi.python.org/pypi/django-autocomplete-light/>`_ by `PyPi
   <http://pypi.python.org/pypi>`_,
-- `Continuous integration graciously hosted
-  <http://travis-ci.org/yourlabs/django-autocomplete-light>`_ by `Travis-ci
-  <http://travis-ci.org>`_
-- `**Paid Support** on codementor
-  <https://www.codementor.io/@jpic>`_
