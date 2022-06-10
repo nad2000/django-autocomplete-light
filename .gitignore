@@ -13,8 +13,11 @@ test_env/
 .coverage
 .tox
 node_modules
-
+tags
+tags.tmp
 .cache/
+.session.vim
 
 # Pycharm
 .idea/
+
