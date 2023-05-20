@@ -1,3 +1,135 @@
+3.9.5-rc6
+
+    2023-04-07 Release 3.9.5-rc6
+    dea11bf changelog.py: fix release dates and tag commits by jpic
+
+3.9.5-rc5
+
+    2023-04-07 Release 3.9.5-rc5
+
+3.9.5-rc4
+
+    2023-04-07 Release 3.9.5-rc4
+    7a45b75 Support local commits in changelog.py by jpic
+
+3.9.5-rc3
+
+    2023-04-07 Release 3.9.5-rc3
+    0cd3b7b Support releases without rebuild by jpic
+    e52a25a Support release commit in changelog script by jpic
+
+3.9.5-rc2
+
+    2023-04-07 Release 3.9.5-rc2
+    0ba6259 Rebuild static by jpic
+    b463af0 Fix #1295: Automate CHANGELOG by jpic
+    #1321   catch ValueError if selected_choices are invalid by @shapiromatron
+    62ecb5f QA by jpic
+    bde0029 Test create option validation by jpic
+    5ac5fb1 Create option on the fly test fix by jpic
+    #1314   fix: test_project/requirements.txt to reduce vulnerabilities by @jpic
+    #1310   Use get_result_value when returning created object by @matevz-ap
+    #1308   Adding `.select2-container--default` class to all style rules so that other themes aren't affected by @trumpet2012
+    #1308   Updating light mode to use original highlighted row colors by @trumpet2012
+    #1308   Adding support for django css variables so that for both light and dark themed admins the select2 fields will look good. by @trumpet2012
+    #1309   Fixing issue where dragging an inline admin section would initialize the autocomplete fields during the dragging view and when dragging stopped the autocomplete field would be reset and not get initialized again since the internal initialized list would already contain that element. by @trumpet2012
+    8bb371f Fix release script by jpic
+
+3.9.5-rc1
+
+    2022-09-09 Release 3.9.5-rc1
+    c1eaa20 Rebuild static by jpic
+    #1293   Add the option to validate the field when creating a new choice by @etiennepouliot
+    ac7860f Fix TOC sidebar with furo theme by jpic
+    #1306   Test Django 4.1 by @adamchainz
+    3599b6f Move documentation theme to furo by jpic
+    2022-09-09 Release 3.9.5-rc0
+    #1307   QA by @jpic
+    #1307   Support Python 3.10 and Django 4 by @jpic
+    #1307   Rebuild static by @jpic
+    #1304   docs: Fix a few typos by @timgates42
+    #1302   finnish translations by @T-101
+    #1297   Add reminder to install django-querysetsequence by @tylerecouture
+
+3.9.4
+
+    2022-03-15 Release 3.9.4
+    98ab8be Fix import by jpic
+
+3.9.3
+
+    2022-03-15 Release 3.9.3
+    77beaad Python 3.10 support by jpic
+
+3.9.2
+
+    2022-03-14 Release 3.9.2
+    #1289   The assumption that sys.argv has a second element is flawed by @bernd-wechner
+    #1286   add GitHub URL for PyPi by @andriyor
+    #1287   Fixes in response to requests by @bernd-wechner
+    #1287   Fixed JQuery version so the test works! by @bernd-wechner
+    #1287   Two isolated unadorned simple test cases added by @bernd-wechner
+    4adff74 Fix #1237: metadata versions by jpic
+
+3.9.1
+
+    2022-02-03 Release 3.9.1
+
+3.9.1rc2
+
+    2022-01-27 Release 3.9.1rc2
+
+3.9.1rc1
+
+    2022-01-27 Release 3.9.1rc1
+    1e4d83b Fix release script by jpic
+    #1280   Selected field's text color changed by @ammarCanc
+
+3.9.0
+
+    2022-01-27 Release 3.9.0
+    #1268   Django 4.0 test by @jpic
+    3eb84a0 Improve tutorial, remove form field override by jpic
+    c40e5dc Test project settings cleaning by jpic
+    1347911 Fix linked_data.js example by jpic
+    f4013bb Support None choices by jpic
+
+3.9.0rc5
+
+    2021-11-26 Release 3.9.0rc5
+    72b8900 Fix #1140: Warn about a django admin bug by jpic
+    8de5b22 Rewrite Select2ListField by jpic
+    d57a87b Remove db.sqlite3 binary by jpic
+    467670e Changelog update by jpic
+
+3.9.0rc4
+
+    NEW FEATURE FOR EVERYONE! Read here and njoy :)
+    https://github.com/yourlabs/django-autocomplete-light/blob/master/docs/tutorial.rst#with-djhacker
+
+    #1270 Fix issue when dal js is loaded twice by @FiooCode
+    #1266 New data-token-separator attribute by @fraimondo
+    #1190 #1187 Fixed django-querysetsequence support
+    Django 3.2 support in test code
+
+3.9.0rc3 failed release
+
+3.9.0-rc2
+
+    #1262 Django 4.0 support by @fraimondo
+    #1255 Django 4.0 warning removal by @Mogost
+    #1253 Case sensitive creates in Select2QuerySetView by @shenek
+    #1246 Add event to notify of the initialization completed by @andreccorrea
+    Select2 Upgraded to 4.1.0-rc.0
+
+3.9.0-rc1
+
+    #1222 Select2GroupQuerySetView fix by @arseniy-panfilov
+    #1233 Safari regexp fix by @vtbassmatt
+    #1239 Django 3.2+ fix by @michael-sayapin
+    #1251 Doc fix get_result_label by @arlopezg
+    #1231 Fix ViewMixin comment by @moonorange
+
 3.8.2 Upgrade to select2 4.0.13
 
 3.8.1 BUGFIX RELEASE

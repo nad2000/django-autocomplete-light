@@ -1,14 +1,17 @@
 """Select2 view implementation."""
 
-import collections
-# import json
+try:
+    from collections.abc import Sequence
+except ImportError:  # py < 3.10
+    from collections import Sequence
+from collections import OrderedDict
 
 from dal.views import BaseQuerySetView, ViewMixin
 
 from django import http
 from django.core.exceptions import ImproperlyConfigured
 from django.db.models import F
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from django.views.generic.list import View
 
 import six
@@ -16,6 +19,8 @@ import six
 
 class Select2ViewMixin(object):
     """View mixin to render a JSON response for Select2."""
+
+    case_sensitive_create = False
 
     def get_results(self, context):
         """Return data for the 'results' key of the response."""
@@ -36,12 +41,20 @@ class Select2ViewMixin(object):
             if page_obj is None or page_obj.number == 1:
                 display_create_option = True
 
-            # Don't offer to create a new option if a
-            # case-insensitive) identical one already exists
-            existing_options = (self.get_result_label(result).lower()
-                                for result in context['object_list'])
-            if q.lower() in existing_options:
-                display_create_option = False
+            if not self.case_sensitive_create:
+                # Don't offer to create a new option if a
+                # case-insensitive) identical one already exists
+                existing_options = (self.get_result_label(result).lower()
+                                    for result in context['object_list'])
+                if q.lower() in existing_options:
+                    display_create_option = False
+            else:
+                existing_options = (
+                    self.get_result_label(result)
+                    for result in context['object_list']
+                )
+                if q in existing_options:
+                    display_create_option = False
 
         if display_create_option and self.has_add_permission(self.request):
             create_option = [{
@@ -93,7 +106,7 @@ class Select2GroupQuerySetView(Select2QuerySetView):
         if not self.group_by_related:
             raise ImproperlyConfigured("Missing group_by_related.")
 
-        groups = collections.OrderedDict()
+        groups = OrderedDict()
 
         object_list = context['object_list']
         object_list = object_list.annotate(
@@ -191,7 +204,7 @@ class Select2GroupListView(Select2ListView):
         group = None
         item = entry
 
-        if isinstance(entry, collections.Sequence) and \
+        if isinstance(entry, Sequence) and \
            not isinstance(entry, six.string_types):
 
             entry_length = len(entry)
@@ -204,12 +217,12 @@ class Select2GroupListView(Select2ListView):
                 return (group, item),
 
             else:
-                if(entry_length > 1):
+                if entry_length > 1:
                     group, item = entry[0:2]
-                elif(entry_length > 0):
+                elif entry_length > 0:
                     item = entry[0]
 
-        if not isinstance(item, collections.Sequence) or \
+        if not isinstance(item, Sequence) or \
            isinstance(item, six.string_types):
             item = (item,)
 

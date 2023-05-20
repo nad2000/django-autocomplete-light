@@ -6,9 +6,13 @@ from functools import reduce
 
 import django
 from django import http
-from django.contrib.admin.utils import lookup_needs_distinct
+if django.VERSION >= (4, 0):
+    from django.contrib.admin.utils import lookup_spawns_duplicates
+else:
+    from django.contrib.admin.utils import lookup_needs_distinct \
+        as lookup_spawns_duplicates
 from django.contrib.auth import get_permission_codename
-from django.core.exceptions import ImproperlyConfigured
+from django.core.exceptions import ImproperlyConfigured, ValidationError
 from django.db.models import Q
 from django.http import HttpResponseBadRequest, HttpResponseNotAllowed
 from django.template.loader import render_to_string
@@ -79,6 +83,7 @@ class BaseQuerySetView(ViewMixin, BaseListView):
     search_fields = []
     split_words = None
     template = None
+    validate_create = None
 
     def has_more(self, context):
         """For widgets that have infinite-scroll feature."""
@@ -145,13 +150,17 @@ class BaseQuerySetView(ViewMixin, BaseListView):
                 ]
                 queryset = queryset.filter(reduce(operator.or_, or_queries))
 
-            if any(
-                lookup_needs_distinct(queryset.model._meta, search_spec)
-                for search_spec in orm_lookups
-            ):
+            if self.lookup_needs_distinct(queryset, orm_lookups):
                 queryset = queryset.distinct()
 
         return queryset
+
+    def lookup_needs_distinct(self, queryset, orm_lookups):
+        """Return True if an orm_lookup requires calling qs.distinct()."""
+        return any(
+            lookup_spawns_duplicates(queryset.model._meta, search_spec)
+            for search_spec in orm_lookups
+        )
 
     def create_object(self, text):
         """Create an object given a text."""
@@ -173,7 +182,11 @@ class BaseQuerySetView(ViewMixin, BaseListView):
         return request.user.has_perm("%s.%s" % (opts.app_label, codename))
 
     def post(self, request, *args, **kwargs):
-        """Create an object given a text after checking permissions."""
+        """
+        Create an object given a text after checking permissions.
+
+        Runs self.validate() if self.validate_create is True.
+        """
         if not self.has_add_permission(request):
             return http.HttpResponseForbidden()
 
@@ -185,9 +198,26 @@ class BaseQuerySetView(ViewMixin, BaseListView):
         if text is None:
             return http.HttpResponseBadRequest()
 
+        if self.validate_create:
+            try:
+                self.validate(text)
+            except ValidationError as error:
+                if self.create_field in error.message_dict:
+                    return http.JsonResponse(dict(error=error))
+
         result = self.create_object(text)
 
         return http.JsonResponse({
-            'id': result.pk,
+            'id': self.get_result_value(result),
             'text': self.get_selected_result_label(result),
         })
+
+    def validate(self, text):
+        """
+        Validate a given text for new option creation.
+
+        Raise ValidationError or return None.
+        """
+        model = self.get_queryset().model
+        obj = model(**{self.create_field: text})
+        obj.full_clean()

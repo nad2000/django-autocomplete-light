@@ -1,5 +1,10 @@
-django-autocomplete-light tutorial
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Tutorial
+~~~~~~~~
+
+.. _select2-tutorial:
+
+.. note:: **For demo links** to work, you need to run the :ref:`test project
+   <demo-install>` on localhost.
 
 Overview
 ========
@@ -18,7 +23,7 @@ Create an autocomplete view
 - Example source code: `test_project/select2_foreign_key
   <https://github.com/yourlabs/django-autocomplete-light/blob/master/test_project/select2_foreign_key/urls.py>`_
 - Live demo: `/select2_foreign_key/test-autocomplete/?q=test
-  <http://dal--jpic.repl.co/select2_foreign_key/test-autocomplete/?q=test>`_
+  <http://localhost:8000/select2_foreign_key/test-autocomplete/?q=test>`_
 
 The only purpose of the autocomplete view is to serve relevant suggestions for
 the widget to propose to the user. DAL leverages Django's `class based views
@@ -97,6 +102,9 @@ Ensure that the url can be reversed, ie::
 Use the view in a Form widget
 =============================
 
+Before you begin
+----------------
+
 You should be able to open the view at this point:
 
 .. image:: img/view.png
@@ -107,28 +115,11 @@ default ModelForm fields<modelforms-overriding-default-fields>`, to use a
 widget to select a Model with Select2, in our case by passing the name of the
 url we have just registered to :py:class:`~dal_select2.widgets.ModelSelect2`.
 
-One way to do it is by overriding the form field, ie:
+Set form widgets
+----------------
 
-.. code-block:: python
-
-    from dal import autocomplete
-
-    from django import forms
-
-
-    class PersonForm(forms.ModelForm):
-        birth_country = forms.ModelChoiceField(
-            queryset=Country.objects.all(),
-            widget=autocomplete.ModelSelect2(url='country-autocomplete')
-        )
-
-        class Meta:
-            model = Person
-            fields = ('__all__')
-
-
-Another way to do this is directly in the ``Form.Meta.widgets`` dict, if
-overriding the field is not needed:
+Setup your autocomplete form widget for this view in the ``Form.Meta.widgets``
+dict:
 
 .. code-block:: python
 
@@ -162,6 +153,36 @@ widget, ie.:
         'visited_countries': autocomplete.ModelSelect2Multiple(url='country-autocomplete')
     }
 
+.. danger:: If you declare a form field instead of just the widget, Django
+   admin won't add the "add" and "edit" button next to the autocomplete field
+   for single model choice. If you want to both declare your field and have
+   Django admin's add / remove buttons then you can use the following method
+   with djhacker.
+
+.. _djhacker:
+
+Automation with djhacker
+------------------------
+
+- Example source code: `test_project/select2_djhacker_formfield
+  <https://github.com/yourlabs/django-autocomplete-light/blob/master/test_project/select2_djhacker_formfield/urls.py>`_
+- Live demo: `/admin/select2_djhacker_formfield/tmodel/add/
+  <http://localhost:8000/admin/select2_djhacker_formfield/tmodel/add/>`_
+
+.. code-block:: python
+
+    import djhacker  # don't forget to pip install djhacker
+    from django import forms
+    djhacker.formfield(
+        Person.birth_country,
+        forms.ModelChoiceField,
+        widget=autocomplete.ModelSelect2(url='country-autocomplete')
+    )
+
+The above example demonstrates how to integrate your autocomplete view and form
+field automatically throughout Django without having to define custom model
+forms all the time.
+
 Passing options to select2
 ==========================
 
@@ -189,6 +210,9 @@ Passing options to select2
 
 Using autocompletes in the admin
 ================================
+
+.. note:: If using :ref:`djhacker<djhacker>`, you can skip this section: your
+          autocomplete should already be working in the admin.
 
 We can make ModelAdmin to :django:label:`use our
 form<admin-custom-validation>`, ie:
@@ -219,7 +243,7 @@ Using autocompletes outside the admin
 - Example source code: `test_project/select2_outside_admin
   <https://github.com/yourlabs/django-autocomplete-light/tree/master/test_project/select2_outside_admin>`_,
 - Live demo: `/select2_outside_admin/
-  <http://dal--jpic.repl.co/select2_outside_admin/>`_.
+  <http://localhost:8000/select2_outside_admin/>`_.
 
 Ensure that jquery is loaded before ``{{ form.media }}``:
 
@@ -237,8 +261,8 @@ to return HTML code.
     from django.utils.html import format_html
 
     class CountryAutocomplete(autocomplete.Select2QuerySetView):
-        def get_result_label(self, item):
-            return format_html('<img src="flags/{}.png"> {}', item.name, item.name)
+        def get_result_label(self, result):
+            return format_html('<img src="flags/{}.png"> {}', result.name, result.name)
 
 
     class PersonForm(forms.ModelForm):
@@ -345,13 +369,29 @@ Example script:
         });
     })
 
+Listening for the initialization of a specific input
+====================================================
+
+To know when a specific dal input has been initialized, we can listen for the event
+``dal-element-initialized``.
+
+Example opening and setting focus on a dal input after initialization:
+
+.. code-block:: javascript
+
+    $(document).on("dal-element-initialized", function (e) {
+        if (e.detail.element.id === "my_dal_element_id") {
+            $("#my_dal_element_id").select2("open").trigger("focus");
+        }
+    });
+
 Creation of new choices in the autocomplete form
 ================================================
 
 - Example source code: `test_project/select2_one_to_one
   <https://github.com/yourlabs/django-autocomplete-light/blob/master/test_project/select2_one_to_one/urls.py>`_,
 - Live demo: `/admin/select2_one_to_one/tmodel/add/
-  <http://dal--jpic.repl.co/admin/select2_one_to_one/tmodel/add/>`_,
+  <http://localhost:8000/admin/select2_one_to_one/tmodel/add/>`_,
 
 The view may provide an extra option when it can't find any result matching the
 user input. That option would have the label ``Create "query"``, where
@@ -377,7 +417,7 @@ the autocomplete user interface, ie:
     urlpatterns = [
         url(
             r'^country-autocomplete/$',
-            CountryAutocomplete.as_view(create_field='name'),
+            CountryAutocomplete.as_view(create_field='name', validate_create=True),
             name='country-autocomplete',
         ),
     ]
@@ -386,6 +426,9 @@ This way, the option 'Create "Tibet"' will be available if a user inputs
 "Tibet" for example. When the user clicks it, it will make the post request to
 the view which will do ``Country.objects.create(name='Tibet')``. It will be
 included in the server response so that the script can add it to the widget.
+
+By activating ``valide_create=True``, a full_clean will be run on the 
+create_field, thus validating all the validators on the field.
 
 Note that creating objects is allowed to logged-in users with ``add`` permission
 on the resource. If you want to grant ``add`` permission to a user, you have to
@@ -396,11 +439,11 @@ explicitly set it with something like:
     permission = Permission.objects.get(name='Can add your-model-name')
     user.user_permissions.add(permission)
 
-Note that the above applies for new objects that only require one field. For more 
-complex objects, `django-addanother <https://github.com/jonashaag/django-addanother>`_ 
-should be considered. With Django Add-Another, a "+" icon is rendered next to the 
-search widget. When clicking this button, an object can be added inside a popup. 
-Once saved, the popup will close and the newly added object will be selected 
+Note that the above applies for new objects that only require one field. For more
+complex objects, `django-addanother <https://github.com/jonashaag/django-addanother>`_
+should be considered. With Django Add-Another, a "+" icon is rendered next to the
+search widget. When clicking this button, an object can be added inside a popup.
+Once saved, the popup will close and the newly added object will be selected
 in the widget.
 
 Filtering results based on the value of other fields in the form
@@ -409,7 +452,7 @@ Filtering results based on the value of other fields in the form
 - Example source code: `test_project/linked_data
   <https://github.com/yourlabs/django-autocomplete-light/tree/master/test_project/linked_data>`_.
 - Live demo: `Admin / Linked Data / Add
-  <http://dal--jpic.repl.co/admin/linked_data/tmodel/add/>`_.
+  <http://localhost:8000/admin/linked_data/tmodel/add/>`_.
 
 In the live demo, create a TestModel with ``owner=None``, and another with
 ``owner=test`` (test being the user you log in with). Then, in in a new form,
@@ -488,7 +531,7 @@ Renaming forwarded values
 - Example source code: `test_project/rename_forward
   <https://github.com/yourlabs/django-autocomplete-light/tree/master/test_project/rename_forward>`_.
 - Live demo: `Admin / Rename Forward/ Add
-  <http://dal--jpic.repl.co/admin/rename_forward/tmodel/add/>`_.
+  <http://localhost:8000/admin/rename_forward/tmodel/add/>`_.
 
 Let's assume that you have the following form using linked autocomplete fields:
 

@@ -74,9 +74,23 @@ document.addEventListener('dal-init-function', function () {
                 cache: true
             };
         }
-
+        use_tags = false;
+        tokenSeparators = null;
+        // Option 1: 'data-tags'
+        if ($element.attr('data-tags')) {
+            tokenSeparators = [','];
+            use_tags = true;
+        }
+        // Option 2: 'data-token-separators'
+        if ($element.attr('data-token-separators')) {
+            use_tags = true
+            tokenSeparators = $element.attr('data-token-separators')
+            if (tokenSeparators == 'null') {
+                tokenSeparators = null;
+            }
+        }
         $element.select2({
-            tokenSeparators: $element.attr('data-tags') ? [','] : null,
+            tokenSeparators: tokenSeparators,
             debug: true,
             containerCssClass: ':all:',
             placeholder: $element.attr('data-placeholder') || '',
@@ -86,8 +100,10 @@ document.addEventListener('dal-init-function', function () {
             templateResult: result_template,
             templateSelection: selected_template,
             ajax: ajax,
-            width: $element.attr('width') || '100%',  // null,
-            tags: Boolean($element.attr('data-tags')),
+            // width: $element.attr('width') || '100%',  // null,
+            // tags: Boolean($element.attr('data-tags')),
+            with: null,
+            tags: use_tags,
         });
 
         $element.on('select2:selecting', function (e) {
@@ -112,11 +128,19 @@ document.addEventListener('dal-init-function', function () {
                     xhr.setRequestHeader("X-CSRFToken", document.csrftoken);
                 },
                 success: function (data, textStatus, jqXHR) {
-                    select.append(
-                        $('<option>', {value: data.id, text: data.text, selected: true})
-                    );
-                    select.trigger('change');
-                    select.select2('close');
+                    if ('error' in data) {
+                        error = data['error']
+                        $('.dal-create').append(
+                            `<p class="invalid-feedback d-block""><strong>${error}</strong>`
+                        );
+
+                    } else {
+                        select.append(
+                            $('<option>', {value: data.id, text: data.text, selected: true})
+                        );
+                        select.trigger('change');
+                        select.select2('close');
+                    }
                 }
             });
         });
