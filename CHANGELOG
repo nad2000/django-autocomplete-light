@@ -1,3 +1,37 @@
+3.11.0-rc1
+
+    227cc34 Remove old submodule by jpic
+    #1343   Fix more string escape warnings by @adamchainz
+    #1347   Fix the issue of invisible JavaScript code blocks in tutorial.rst. by @oubeichen
+    #1344   Return to upstream django-nested-admin as the bug was fixed in 3.4.0 by @adamchainz
+    #1344   Test on Django 5.0 by @adamchainz
+3.10.0-rc4
+3.10.0-rc3
+
+    #1335   fix: Fix event format for Django 4.2 by @last-partizan
+    #1336   Update taggit.rst docs. by @voberoi
+    2e51796 Drop Python 2 support (credit @claudep) by jpic
+
+3.9.7
+
+    2023-05-12 Release 3.9.7
+    2023-05-12 Release 3.9.6
+    2023-05-12 Release 3.9.6rc1
+
+3.9.5
+
+    2023-05-10 Release 3.9.5
+    #1327   Fix unittest assertEquals warnings by @adamchainz
+    #1326   Fix Python string escape warning by @adamchainz
+    #1325   Remove 'plugins' from pytest.ini by @adamchainz
+    #1324   Test on Django 4.2 by @adamchainz
+    66210bb CHANGELOG update by jpic
+
+
+
+
+
+
 3.9.5-rc6
 
     2023-04-07 Release 3.9.5-rc6

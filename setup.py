@@ -12,7 +12,7 @@ def read(fname):
 
 setup(
     name='django-autocomplete-light',
-    version='3.9.7',
+    version='3.11.0-rc1',
     description='Fresh autocompletes for Django',
     author='James Pic',
     author_email='jamespic@gmail.com',
@@ -29,7 +29,6 @@ setup(
     keywords='django autocomplete',
     install_requires=[
         'django>=3.2',
-        'six',
     ],
     extras_require={
         'nested': ['django-nested-admin>=3.0.21'],
@@ -45,6 +44,7 @@ setup(
         'Framework :: Django :: 4.0',
         'Framework :: Django :: 4.1',
         'Framework :: Django :: 4.2',
+        'Framework :: Django :: 5.0',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: MIT License',
         'Operating System :: OS Independent',

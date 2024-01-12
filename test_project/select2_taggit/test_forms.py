@@ -7,8 +7,6 @@ try:
 except ImportError:
     from django.core.urlresolvers import reverse
 
-import six
-
 from taggit.models import Tag
 
 from .forms import TForm
@@ -62,9 +60,10 @@ class TagSelect2TestMixin(object):
         self.assertHTMLEqual(
             forms.SelectMultiple(
                 choices=(
-                    (six.text_type(tag), six.text_type(tag)),
+                    (str(tag), str(tag)),
                 ),
                 attrs={
+                    'aria-describedby': 'id_test_helptext',
                     'data-autocomplete-light-function': 'select2',
                     'data-autocomplete-light-url': reverse(self.url_name),
                     'data-autocomplete-light-language': 'en',
@@ -72,9 +71,9 @@ class TagSelect2TestMixin(object):
                     'id': 'id_test',
                 }
             ).render('test', value=[
-                six.text_type(tag),
+                str(tag),
             ], attrs={'required': django.VERSION >= (1, 10)}),
-            six.text_type(form['test'].as_widget())
+            str(form['test'].as_widget())
         )
 
 
