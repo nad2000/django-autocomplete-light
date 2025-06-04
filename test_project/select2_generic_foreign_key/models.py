@@ -21,6 +21,7 @@ class TModel(models.Model):
     )
 
     test = GenericForeignKey('content_type', 'object_id')
+    test.editable = True
 
     content_type2 = models.ForeignKey(
         'contenttypes.ContentType',
@@ -38,6 +39,7 @@ class TModel(models.Model):
     )
 
     test2 = GenericForeignKey('content_type2', 'object_id2')
+    test2.editable = True
 
     for_inline = models.ForeignKey(
         'self',

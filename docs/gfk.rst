@@ -30,9 +30,17 @@ Consider such a model:
         )
 
         location = GenericForeignKey('content_type', 'object_id')
+        # required for django 5.1
+        location.editable = True
 
         def __str__(self):
             return self.name
+
+.. danger::
+
+    Django 5.1 cleanup breaks this https://code.djangoproject.com/ticket/35224
+    I've opened a ticket to fix it https://code.djangoproject.com/ticket/36151#comment:3
+    Meanwhile **MAKE SURE YOU MONKEY PATCH ``editable=True``** !!
 
 .. _generic-autocomplete-view:
 
