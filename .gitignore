@@ -1,5 +1,6 @@
 *pyc
 docs/build
+docs/_build
 docs/source/_static
 test_project/htmlcov/
 test_project/.coverage
@@ -21,3 +22,6 @@ tags.tmp
 # Pycharm
 .idea/
 
+# Claude Code
+.claude/
+.python-version

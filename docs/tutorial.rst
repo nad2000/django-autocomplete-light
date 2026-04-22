@@ -27,8 +27,8 @@ Create an autocomplete view
 
 The only purpose of the autocomplete view is to serve relevant suggestions for
 the widget to propose to the user. DAL leverages Django's `class based views
-<https://docs.djangoproject.com/es/1.9/topics/class-based-views/>`_
-and `Mixins <https://en.wikipedia.org/wiki/Mixin>`_ to for code reuse.
+<https://docs.djangoproject.com/en/stable/topics/class-based-views/>`_
+and `Mixins <https://en.wikipedia.org/wiki/Mixin>`_ for code reuse.
 
 .. note:: Do **not** miss the `Classy Class-Based Views
           <http://ccbv.co.uk/>`_ website which helps a lot to work with
@@ -37,7 +37,7 @@ and `Mixins <https://en.wikipedia.org/wiki/Mixin>`_ to for code reuse.
 In this tutorial, we'll first learn to make autocompletes backed by a
 `QuerySet`. Suppose we have a Country `Model` which we want to provide a
 `Select2 <https://select2.github.io/>`_ autocomplete widget for in a form. If a
-users types an "f" it would propose "Fiji", "Finland" and "France", to
+user types an "f" it would propose "Fiji", "Finland" and "France", to
 authenticated users only:
 
 .. image:: img/autocomplete.png
@@ -64,23 +64,25 @@ The base view for this is :py:class:`~dal_select2.views.Select2QuerySetView`.
 
             return qs
 
-.. note:: For more complex filtering, refer to official documentation for
-          the :django:label:`queryset-api`.
+.. note:: For more complex filtering, refer to the official Django
+          :ref:`django:queryset-api` documentation.
 
 .. _register-view:
 
 Register the autocomplete view
 ==============================
 
-Create a :django:label:`named url<naming-url-patterns>` for the view, ie:
+Create a :ref:`named url <django:naming-url-patterns>` for the view, ie:
 
 .. code-block:: python
+
+    from django.urls import path
 
     from your_countries_app.views import CountryAutocomplete
 
     urlpatterns = [
-        url(
-            r'^country-autocomplete/$',
+        path(
+            'country-autocomplete/',
             CountryAutocomplete.as_view(),
             name='country-autocomplete',
         ),
@@ -90,10 +92,8 @@ Ensure that the url can be reversed, ie::
 
     ./manage.py shell
     In [1]: from django.urls import reverse
-    In [2]: #older django versions: from django.core.urlresolvers import reverse
-
-    In [3]: reverse('country-autocomplete')
-    Out[2]: u'/country-autocomplete/'
+    In [2]: reverse('country-autocomplete')
+    Out[2]: '/country-autocomplete/'
 
 .. danger:: As you might have noticed, we have just exposed data through a
             public URL. Please don't forget to do proper permission checks in
@@ -110,9 +110,8 @@ You should be able to open the view at this point:
 .. image:: img/view.png
 
 We can now use the autocomplete view our Person form, for its ``birth_country``
-field that's a ``ForeignKey``. So, we're going to :django:label:`override the
-default ModelForm fields<modelforms-overriding-default-fields>`, to use a
-widget to select a Model with Select2, in our case by passing the name of the
+field that's a ``ForeignKey``. So, we're going to :ref:`override the default ModelForm fields <django:modelforms-overriding-default-fields>`,
+to use a widget to select a Model with Select2, in our case by passing the name of the
 url we have just registered to :py:class:`~dal_select2.widgets.ModelSelect2`.
 
 Set form widgets
@@ -152,6 +151,22 @@ widget, ie.:
     widgets = {
         'visited_countries': autocomplete.ModelSelect2Multiple(url='country-autocomplete')
     }
+
+Initial values on edit forms
+----------------------------
+
+Because Select2 widgets load their options via AJAX, the currently selected
+value is often absent from the choices list at render time. Without special
+handling, editing an existing object would show a blank autocomplete field
+even though a value is already saved.
+
+All DAL Select2 widgets (:py:class:`~dal_select2.widgets.ModelSelect2`,
+:py:class:`~dal_select2.widgets.ModelSelect2Multiple`,
+:py:class:`~dal_select2.widgets.ListSelect2`,
+:py:class:`~dal_select2.widgets.Select2Multiple`) include
+:py:class:`~dal_select2.widgets.Select2InitialRenderMixin`, which
+automatically injects the initial value into the choices at render time so it
+appears pre-selected. No extra configuration is required.
 
 .. danger:: If you declare a form field instead of just the widget, Django
    admin won't add the "add" and "edit" button next to the autocomplete field
@@ -214,8 +229,7 @@ Using autocompletes in the admin
 .. note:: If using :ref:`djhacker<djhacker>`, you can skip this section: your
           autocomplete should already be working in the admin.
 
-We can make ModelAdmin to :django:label:`use our
-form<admin-custom-validation>`, ie:
+We can make ModelAdmin to :ref:`use our custom form <django:admin-custom-validation>`, ie:
 
 .. code-block:: python
 
@@ -415,8 +429,8 @@ the autocomplete user interface, ie:
 .. code-block:: python
 
     urlpatterns = [
-        url(
-            r'^country-autocomplete/$',
+        path(
+            'country-autocomplete/',
             CountryAutocomplete.as_view(create_field='name', validate_create=True),
             name='country-autocomplete',
         ),
@@ -427,7 +441,7 @@ This way, the option 'Create "Tibet"' will be available if a user inputs
 the view which will do ``Country.objects.create(name='Tibet')``. It will be
 included in the server response so that the script can add it to the widget.
 
-By activating ``valide_create=True``, a full_clean will be run on the 
+By activating ``validate_create=True``, a full_clean will be run on the
 create_field, thus validating all the validators on the field.
 
 Note that creating objects is allowed to logged-in users with ``add`` permission
@@ -455,7 +469,7 @@ Filtering results based on the value of other fields in the form
   <http://localhost:8000/admin/linked_data/tmodel/add/>`_.
 
 In the live demo, create a TestModel with ``owner=None``, and another with
-``owner=test`` (test being the user you log in with). Then, in in a new form,
+``owner=test`` (test being the user you log in with). Then, in a new form,
 you'll see both options if you leave the owner select empty:
 
 .. image:: img/all.png
@@ -483,7 +497,7 @@ value of the continent field to the view when it fetches data. We can use the
                                                            forward=['continent'])
             }
 
-DAL's Select2 configuration script will get the value fo the form field named
+DAL's Select2 configuration script will get the value of the form field named
 ``'continent'`` and add it to the autocomplete HTTP query. This will pass the
 value for the "continent" form field in the AJAX request, and we can then
 filter as such in the view:
@@ -744,7 +758,7 @@ You can use the ``$.getFormPrefix()`` jQuery plugin used by DAL to clear the
     });
 
 To autoload the script with the form, you can use `Form.Media
-<https://docs.djangoproject.com/en/1.9/topics/forms/media/#media-on-forms>`_.
+<https://docs.djangoproject.com/en/stable/topics/forms/media/#media-on-forms>`_.
 
 Autocompleting based on a List of Strings
 =========================================

@@ -48,7 +48,7 @@ Form example
 ============
 
 To enable the use of automatic views we need to add 'dal_queryset_sequence'
- to :django:setting:`INSTALLED_APPS`.
+ to ``INSTALLED_APPS``.
 
 First, we can't use Django's ModelForm because it doesn't support
 non-editable fields, which GenericForeignKey is. Instead, we'll use
@@ -69,7 +69,7 @@ Result:
 
 .. code-block:: python
 
-    from dal import autocomplete  # don't forget to pip install django-querysetsequence
+    from dal import autocomplete  # don't forget to pip install django-autocomplete-light[gfk]
 
     class TestForm(autocomplete.FutureModelForm):
 
